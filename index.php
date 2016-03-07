@@ -62,6 +62,7 @@ use Core\Router;
 //define routes
 Router::any('', 'Controllers\Welcome@index');
 Router::any('subpage', 'Controllers\Welcome@subPage');
+Router::any('story', 'Controllers\Story@getList');
 
 //if no route found
 Router::error('Core\Error@index');
