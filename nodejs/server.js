@@ -20,10 +20,10 @@ function handler (req, res) {
 io.on('connection', function (socket) {
 	socket.emit('play', {url: 'http://www.ailab.hcmus.edu.vn/voice_adaption/uploads/ngan.mp3'});
 	setTimeout(function() {
-		socket.emit('play', {url: 'http://www.ailab.hcmus.edu.vn/voice_adaption/uploads/tb.mp3'});
-	}, 1000);
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+		socket.emit('play', {url: 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3'});
+	}, 10000);
+	socket.emit('news', { hello: 'world' });
+	socket.on('my other event', function (data) {
+		console.log(data);
+	});
 });
