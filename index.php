@@ -63,6 +63,7 @@ use Core\Router;
 Router::any('', 'Controllers\Welcome@index');
 Router::any('subpage', 'Controllers\Welcome@subPage');
 Router::any('story', 'Controllers\Story@getList');
+Router::any('socket', 'Controllers\Socket@createServer');
 
 //if no route found
 Router::error('Core\Error@index');

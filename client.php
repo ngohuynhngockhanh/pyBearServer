@@ -1,0 +1,22 @@
+<?php
+if (file_exists('vendor/autoload.php')) {
+    require 'vendor/autoload.php';
+} else {
+    echo "<h1>Please install via composer.json</h1>";
+    echo "<p>Install Composer instructions: <a href='https://getcomposer.org/doc/00-intro.md#globally'>https://getcomposer.org/doc/00-intro.md#globally</a></p>";
+    echo "<p>Once composer is installed navigate to the working directory in your terminal/command promt and enter 'composer install'</p>";
+    exit;
+}
+
+if (!is_readable('app/Core/Config.php')) {
+    die('No Config.php found, configure and rename Config.example.php to Config.php in app/Core.');
+}
+
+$loop = React\EventLoop\Factory::create();
+
+$client = stream_socket_client('tcp://127.0.0.1:1234');
+$conn = new React\Stream\Stream($client, $loop);
+$conn->pipe(new React\Stream\Stream(STDOUT, $loop));
+$conn->write("Hello World!\n");
+
+$loop->run();
