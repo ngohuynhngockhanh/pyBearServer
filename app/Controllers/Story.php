@@ -4,6 +4,7 @@ namespace Controllers;
 use Core\View;
 use Core\Controller;
 use Models\StoryModel;
+use Models\RestAPI;
 
 /*
  * Story controller
@@ -16,6 +17,7 @@ use Models\StoryModel;
 class Story extends Controller
 {
 	private $storyModel;
+	private $RestAPI;
     /**
      * Call the parent construct
      */
@@ -23,6 +25,7 @@ class Story extends Controller
     {
         parent::__construct();
 		$this->storyModel = new StoryModel();
+		$this->RestAPI = new RestAPI();
     }
 
     /**
@@ -31,7 +34,7 @@ class Story extends Controller
     public function getList()
     {
 		$data = $this->storyModel->getList();
-        View::render('story/list', $data);
+        View::render('restAPI', $this->RestAPI->output($data));
     }
 
 }
