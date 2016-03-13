@@ -2,14 +2,16 @@
 namespace Models;
 
 use Core\Model;
+use Core\View;
 
 class RestAPI extends Model {
-	private $outputType 		= 'json';
-	private $respsonseCode 		= 1;
-	private $errorMesg			= "";
+	private $_outputType 		= 'json';
+	private $_respsonseCode 		= 1;
+	private $_errorMesg			= "";
+	private $_input				= null;
 	
 	public function __construct($outputType = 'json') {
-		$this->outputType = $outputType;
+		$this->_outputType = $outputType;
 	}
 	
 	//output json 
@@ -30,8 +32,8 @@ class RestAPI extends Model {
 	//generate respsonse
 	public function generateResp($data) {
 		$resp = array(
-			'respsonseCode' => $this->respsonseCode,
-			'errorMesg' => $this->errorMesg,
+			'respsonseCode' => $this->_respsonseCode,
+			'errorMesg' => $this->_errorMesg,
 			'data'			=>	$data
 		);
 		return $resp;
@@ -41,7 +43,7 @@ class RestAPI extends Model {
 	public function output($data) {
 		$resp = $this->generateResp($data);
 		$res = "";
-		switch ($this->outputType) {
+		switch ($this->_outputType) {
 			case "xml":
 				$res = $this->outputXML($resp);
 				break;
@@ -53,5 +55,30 @@ class RestAPI extends Model {
 				break;
 		}
 		return $res;
+	}
+	
+	//get input from json
+	private function _getInput() {
+		if (!$this->_input) {
+			$this->_input = file_get_contents("php://input");
+		}
+		return $this->_input;
+	}
+	
+	//parse Input
+	public function parseInput() {
+		$this->_getInput();
+		return json_decode($this->_input);
+		
+	}
+	
+	//get method from post
+	public function getMethod() {
+		return $_SERVER['REQUEST_METHOD'];
+	}
+	
+	//display
+	public function display($data) {
+		View::render('restAPI', $this->output($data));
 	}
 }

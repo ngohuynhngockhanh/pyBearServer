@@ -5,6 +5,8 @@ use Core\View;
 use Core\Controller;
 use Models\StoryModel;
 use Models\RestAPI;
+use ElephantIO\Client,
+    ElephantIO\Engine\SocketIO\Version1X;
 
 /*
  * Story controller
@@ -34,7 +36,29 @@ class Story extends Controller
     public function getList()
     {
 		$data = $this->storyModel->getList();
-        View::render('restAPI', $this->RestAPI->output($data));
+		$this->RestAPI->display($data);
     }
-
+	
+	
+	/**
+	* play a story
+	*/
+	public function play() {
+		$roomID = $_GET['roomID'];
+		$url = $this->RestAPI->parseInput()->url;
+		
+		if ($this->RestAPI->getMethod() == "POST") {
+			$client = new Client(new Version1X('http://127.0.0.1:1234'));
+			$client->initialize();
+			$client->of('/phpServer');
+			$client->emit('playFromURL', ['url' => $url, 'roomID' => $roomID]);
+			$client->close();	
+		}
+		
+		$this->RestAPI->display(array(
+			'url'	=>	$url
+		));
+	}
+	
+	
 }

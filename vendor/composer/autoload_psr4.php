@@ -6,5 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'ElephantIO\\' => array($vendorDir . '/wisembly/elephant.io/src', $vendorDir . '/wisembly/elephant.io/test'),
     '' => array($baseDir . '/app'),
 );

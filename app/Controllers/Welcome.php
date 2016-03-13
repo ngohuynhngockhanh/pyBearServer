@@ -31,7 +31,7 @@ class Welcome extends Controller
     {
         $data['title'] = $this->language->get('welcome_text');
         $data['welcome_message'] = $this->language->get('welcome_message');
-
+		var_dump($_POST);
         View::renderTemplate('header', $data);
         View::render('welcome/welcome', $data);
         View::renderTemplate('footer', $data);

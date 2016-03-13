@@ -11,7 +11,10 @@ if (file_exists('vendor/autoload.php')) {
 if (!is_readable('app/Core/Config.php')) {
     die('No Config.php found, configure and rename Config.example.php to Config.php in app/Core.');
 }
-
+Header('Access-Control-Allow-Origin: *'); 
+Header('Access-Control-Allow-Credentials: true');
+Header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding');
+Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE, PUT'); 
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -60,10 +63,11 @@ new Core\Config();
 use Core\Router;
 
 //define routes
-Router::any('', 'Controllers\Welcome@index');
-Router::any('subpage', 'Controllers\Welcome@subPage');
-Router::any('story', 'Controllers\Story@getList');
-Router::any('socket', 'Controllers\Socket@createServer');
+Router::any('', 					'Controllers\Welcome@index');
+Router::any('subpage', 				'Controllers\Welcome@subPage');
+Router::get('story', 				'Controllers\Story@getList');
+Router::any('story/play', 			'Controllers\Story@play');
+
 
 //if no route found
 Router::error('Core\Error@index');
