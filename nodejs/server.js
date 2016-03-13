@@ -1,6 +1,9 @@
 var app = require('http').createServer(handler)
 var io = require('socket.io')(app);
+var bear = io.of('/bear');
+var phpServer = io.of('/phpServer');
 var fs = require('fs');
+var phpjs = require('phpjs');
 
 app.listen(1234);
 
@@ -17,13 +20,33 @@ function handler (req, res) {
   });
 }
 
-io.on('connection', function (socket) {
-	socket.emit('play', {url: 'http://www.ailab.hcmus.edu.vn/voice_adaption/uploads/ngan.mp3'});
-	setTimeout(function() {
-		socket.emit('play', {url: 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3'});
-	}, 10000);
-	socket.emit('news', { hello: 'world' });
-	socket.on('my other event', function (data) {
-		console.log(data);
+//play emit
+function play(socket, url) {
+	var data = {url: url};
+	socket.emit('play', data);
+}
+
+bear.on('connection', function (socket) {
+	console.log("bear connected");
+	socket.on('joinRoom', function(data) {
+		socket.join(data['roomID']);
+		console.log("join room " + data['roomID']);
 	});
+});
+
+phpServer.on('connection', function (socket) {
+	console.log("php connected");
+	socket.on('playFromURL', function(data) {
+		console.log(data);
+		if (phpjs.isset(data['url'])) {
+			var url = data['url'];
+			var roomID = data['roomID'];
+			if (roomID == undefined)
+				roomID = "_________________________________";
+			console.log(url);
+			console.log(roomID);
+			bear.to(roomID).emit('play', {url: url});
+		}
+	});
+	
 });
