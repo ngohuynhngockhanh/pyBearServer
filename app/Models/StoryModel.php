@@ -21,7 +21,10 @@ class StoryModel extends ModelMongo {
 	}
 	
 	public function insert($item) {
-		if (!$this->mongo->getCollection('story')->find()->where('id', $item['id'])->findOne())
+		$doc = $this->mongo->getCollection('story')->find()->where('id', $item['id'])->findOne();
+		if (!doc)
 			$this->mongo->getCollection('story')->createDocument($item)->save();
+		else 
+			$doc->update($item)->save();
 	}
 }
