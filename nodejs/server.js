@@ -41,11 +41,15 @@ phpServer.on('connection', function (socket) {
 		if (phpjs.isset(data['url'])) {
 			var url = data['url'];
 			var roomID = data['roomID'];
+			var sid = data['sid'];
 			if (roomID == undefined)
 				roomID = "_________________________________";
 			console.log(url);
 			console.log(roomID);
-			bear.to(roomID).emit('play', {url: url});
+			bear.to(roomID).emit('play', {
+				url: url,
+				sid: sid
+			});
 		}
 	});
 	

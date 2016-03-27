@@ -35,11 +35,13 @@ class Config
 
         //database details ONLY NEEDED IF USING A DATABASE
         define('DB_TYPE', 'mysql');
-        define('DB_HOST', 'localhost');
-        define('DB_NAME', 'pybearserver');
-        define('DB_USER', 'root');
-        define('DB_PASS', '@12345@');
+        define('DB_HOST', '');
+        define('DB_NAME', '');
+        define('DB_USER', '');
+        define('DB_PASS', '');
         define('PREFIX', '');
+		define('DSN_HOST', 'mongodb://localhost:27017/pyBearServer');
+		define('DNS_DBNAME', 'pyBearServer');
         //set prefix for sessions
         define('SESSION_PREFIX', 'smvc_');
 

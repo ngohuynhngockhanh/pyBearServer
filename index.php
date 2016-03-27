@@ -66,6 +66,7 @@ use Core\Router;
 Router::any('', 					'Controllers\Welcome@index');
 Router::any('subpage', 				'Controllers\Welcome@subPage');
 Router::get('story', 				'Controllers\Story@getList');
+Router::get('story/update',			'Controllers\Story@updateList');
 Router::any('story/play', 			'Controllers\Story@play');
 
 

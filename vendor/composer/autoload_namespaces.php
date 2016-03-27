@@ -6,4 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'GeoJson\\' => array($vendorDir . '/jmikola/geojson/src'),
+    'Curl' => array($vendorDir . '/curl/curl/src'),
 );
