@@ -42,13 +42,15 @@ phpServer.on('connection', function (socket) {
 			var url = data['url'];
 			var roomID = data['roomID'];
 			var sid = data['sid'];
+			var uid = data['uid'];
 			if (roomID == undefined)
 				roomID = "_________________________________";
 			console.log(url);
 			console.log(roomID);
 			bear.to(roomID).emit('play', {
 				url: url,
-				sid: sid
+				sid: sid,
+				uid: uid
 			});
 		}
 	});

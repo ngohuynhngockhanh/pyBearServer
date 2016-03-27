@@ -68,6 +68,7 @@ Router::any('subpage', 				'Controllers\Welcome@subPage');
 Router::get('story', 				'Controllers\Story@getList');
 Router::get('story/update',			'Controllers\Story@updateList');
 Router::any('story/play', 			'Controllers\Story@play');
+Router::any('story/playlist/update','Controllers\Story@playlistUpdate');
 
 
 //if no route found

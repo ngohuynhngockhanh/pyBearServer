@@ -32,7 +32,11 @@ class AILab {
 		$curl = $this->post($url, ['uid' => $uid]);
 		$data = $curl->response;
 		$curl->close();
-		return @json_decode($data);
+		$data = @json_decode($data);
+		if ($data && !$data->uid) {
+			$data->uid = $uid;
+		}
+		return $data;
 	}
 	
 	public function setTimestamp($timestamp) {

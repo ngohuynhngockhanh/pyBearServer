@@ -6,6 +6,7 @@ use Core\Controller;
 use Models\StoryModel;
 use Models\RestAPI;
 use Models\Config;
+use Models\User;
 use ElephantIO\Client,
     ElephantIO\Engine\SocketIO\Version1X;
 use Helpers\AILab;
@@ -39,7 +40,8 @@ class Story extends Controller
      */
     public function getList()
     {
-		$data = $this->storyModel->getList();
+		$uid = intval($_GET['uid']);
+		$data = $this->storyModel->getList($uid);
 		$this->RestAPI->display($data);
     }
 	
@@ -48,22 +50,35 @@ class Story extends Controller
 	 * Update all list
 	 */
 	public function updateList() {
-		$AILab = new AILab(intval($this->config->get('timestamp')));
-		$resp = $AILab->getall();
-		$resp->items = (array)$resp->items;
-		if ($resp->items)
-			foreach ($resp->items as $i => $item) {
-				$this->storyModel->insert((array) $item);
-			}
-		$this->config->set("timestamp", $resp->timestamp);
-		$this->RestAPI->display($this->config->get('timestamp'));
+		$uid = intval($_GET['uid']);
+		$timestamp = intval($this->config->get('timestamp'.$uid));		
+		if ($timestamp < 1)
+			$timestamp = 1;
+		
+		$AILab = new AILab($timestamp);
+		$resp = $AILab->getall($uid);
+		if ($resp->items) {
+			$resp->items = (array)$resp->items;
+			if ($resp->items)
+				foreach ($resp->items as $i => $item) {
+					$item = (array) $item;
+					$item['uid'] = $resp->uid;
+					$this->storyModel->insert($item);
+				}
+		}
+		$this->config->set("timestamp".$uid, $resp->timestamp);
+		$this->RestAPI->display($this->config->get('timestamp'.$uid));
 	}
 	
 	/**
 	* play a story
 	*/
 	public function play() {
-		$roomID = $_GET['roomID'];
+		$uid = intval($_GET['uid']);
+		$user = User::getInstance()->getUserFromUID($uid);
+		if ($user == null)
+			return false;
+		$roomID = $user->get('roomID');
 		$url = $this->RestAPI->parseInput()->url;
 		$sid = intval($this->RestAPI->parseInput()->sid);
 		if ($this->RestAPI->getMethod() == "POST") {
@@ -73,7 +88,8 @@ class Story extends Controller
 			$client->emit('playFromURL', [
 				'url' 		=> $url,
 				'roomID' 	=> $roomID,
-				'sid'		=> $sid
+				'sid'		=> $sid,
+				'uid'		=> $uid,
 			]);
 			$client->close();	
 		}
@@ -83,5 +99,12 @@ class Story extends Controller
 		));
 	}
 	
+	
+	public function playlistUpdate() {
+		$uid = intval($_GET['uid']);
+		$playlist = $this->RestAPI->parseInput()->playlist;
+		User::getInstance()->updatePlaylist($uid, $playlist);
+		$this->RestAPI->display("ok");
+	}
 	
 }
