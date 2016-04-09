@@ -55,4 +55,9 @@ phpServer.on('connection', function (socket) {
 		}
 	});
 	
+	
+	socket.on('playlist', function(data) {
+		var roomID = data['roomID'];
+		bear.to(roomID).emit('updatePlaylist', data);
+	});
 });
