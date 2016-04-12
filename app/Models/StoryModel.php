@@ -40,4 +40,29 @@ class StoryModel extends ModelMongo {
 			$doc->update($item)->save();
 		}
 	}
+	
+	public function getListOfStoryFromPlaylist($uid, $roomID) {
+		$playlist = User::getInstance()->getPlaylist($uid);
+		$collection = $this->mongo->getCollection('story');
+		$orExpression = [];
+		for ($i = 0; $i < count($playlist); $i++)
+			$orExpression[$i] = $collection->expression()->where('id', $playlist[$i]);
+		
+		$cursor = $collection->find()->where('uid', $uid)
+									->whereOr($orExpression);
+									
+		$documentList = $cursor->findAll();
+		$result = array();
+		foreach ($documentList as $_id => $document) {
+			$res = array(
+				'sid'		=> $document->id,
+				'title'		=> $document->title,
+				'path' 		=> $document->link,
+				'uid'		=> $uid
+			);
+			$result[] = $res;
+		}
+		$result = ['roomID' => $roomID, 'playlist' => $result, 'uid' => $uid];
+		return $result;
+	}
 }

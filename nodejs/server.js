@@ -60,4 +60,10 @@ phpServer.on('connection', function (socket) {
 		var roomID = data['roomID'];
 		bear.to(roomID).emit('updatePlaylist', data);
 	});
+	
+	socket.on('setVolume', function(data) {
+		var roomID = data['roomID'];
+		var volume = data['volume'];
+		bear.to(roomID).emit('setVolume', data);
+	});
 });

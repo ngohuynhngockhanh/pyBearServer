@@ -7,8 +7,7 @@ use Models\StoryModel;
 use Models\RestAPI;
 use Models\Config;
 use Models\User;
-use ElephantIO\Client,
-    ElephantIO\Engine\SocketIO\Version1X;
+use Models\SocketClient;
 use Helpers\AILab;
 
 /*
@@ -82,16 +81,12 @@ class Story extends Controller
 		$url = $this->RestAPI->parseInput()->url;
 		$sid = intval($this->RestAPI->parseInput()->sid);
 		if ($this->RestAPI->getMethod() == "POST") {
-			$client = new Client(new Version1X('http://127.0.0.1:1234'));
-			$client->initialize();
-			$client->of('/phpServer');
-			$client->emit('playFromURL', [
+			SocketClient::emit('playFromURL', [
 				'url' 		=> $url,
 				'roomID' 	=> $roomID,
 				'sid'		=> $sid,
 				'uid'		=> $uid,
 			]);
-			$client->close();	
 		}
 		
 		$this->RestAPI->display(array(
@@ -99,12 +94,38 @@ class Story extends Controller
 		));
 	}
 	
-	
+	/*
+	*	update playlist
+	*/
 	public function playlistUpdate() {
 		$uid = intval($_GET['uid']);
+		$user = User::getInstance()->getUserFromUID($uid);
+		$roomID = $user->get('roomID');
+		
 		$playlist = $this->RestAPI->parseInput()->playlist;
 		User::getInstance()->updatePlaylist($uid, $playlist);
+		
+		SocketClient::emit('playlist', $this->storyModel->getListOfStoryFromPlaylist($uid, $roomID));
+		
 		$this->RestAPI->display("ok");
 	}
 	
+	/*
+	* Set volume
+	*/
+	public function setVolume() {
+		$uid = intval($_GET['uid']);
+		$user = User::getInstance()->getUserFromUID($uid);
+		if ($user == null)
+			return false;
+		$roomID = $user->get('roomID');
+		$volume = $this->RestAPI->parseInput()->volume;
+		SocketClient::emit('setVolume', [
+			'volume' 	=> $volume,
+			'roomID' 	=> $roomID,
+			'uid'		=> $uid,
+		]);
+		
+		$this->RestAPI->display("ok");
+	}
 }
