@@ -70,7 +70,7 @@ Router::get('story/update',			'Controllers\Story@updateList');
 Router::any('story/play', 			'Controllers\Story@play');
 Router::any('story/playlist/update','Controllers\Story@playlistUpdate');
 Router::any('story/setVolume',		'Controllers\Story@setVolume');
-
+Router::any('story/triggerUrl',		'Controllers\Story@triggerUrl');
 //if no route found
 Router::error('Core\Error@index');
 

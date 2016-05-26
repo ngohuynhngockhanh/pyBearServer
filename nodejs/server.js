@@ -5,8 +5,8 @@ var phpServer = io.of('/phpServer');
 var fs = require('fs');
 var phpjs = require('phpjs');
 
-app.listen(1234);
-
+app.listen(8000);
+console.log("started server");
 function handler (req, res) {
   fs.readFile(__dirname + '/index.html',
   function (err, data) {

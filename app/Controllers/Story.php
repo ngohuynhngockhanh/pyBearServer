@@ -110,6 +110,16 @@ class Story extends Controller
 		$this->RestAPI->display("ok");
 	}
 	
+	/**
+	* triggerText
+	*/
+	public function triggerUrl() {
+		$uid = intval($_GET['uid']);
+		$url = $_GET['url'];
+		
+		$this->RestAPI->display(User::getInstance()->updateTriggerUrl($uid, $url) ? "ok" : "error not found");
+	}
+	
 	/*
 	* Set volume
 	*/

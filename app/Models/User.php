@@ -21,11 +21,23 @@ class User extends ModelMongo {
 	public function updatePlaylist($uid, $list) {
 		//[['sid' => 123]]
 		$user = $this->getUserFromUID($uid);
-		if ($user)
+		if ($user) {
 			$user->set('playlist', $list)->save();
+			return true;
+		}
+		return false;
 	}
 	
 	public function getPlaylist($uid) {
 		return $this->getUserFromUID($uid)->get("playlist");
+	}
+	
+	public function updateTriggerUrl($uid, $url) {
+		$user = $this->getUserFromUID($uid);
+		if ($user) {
+			$user->set('processedUrl', $url)->save();
+			return true;
+		}
+		return false;
 	}
 }
